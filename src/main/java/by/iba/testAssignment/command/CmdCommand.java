@@ -19,6 +19,7 @@ public class CmdCommand implements Command {
 
     }
 
+    //TODO
     public Map<String, String> read () {
         String command = "";
         Map<String, String> output = new HashMap<>();

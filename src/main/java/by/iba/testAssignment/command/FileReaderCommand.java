@@ -1,7 +1,5 @@
 package by.iba.testAssignment.command;
 
-
-import by.iba.testAssignment.validator.LineValidator;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
@@ -11,12 +9,14 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static by.iba.testAssignment.ApplicationConstants.FILE_ERR;
 
 public class FileReaderCommand implements Command {
     private static final Logger log = LogManager.getLogger(FileReaderCommand.class);
+    private static final String LINE_REGEX = "[A-Za-z]+=[A-Za-z]+";
 
     @Override
     public void execute(String path) {
@@ -27,14 +27,16 @@ public class FileReaderCommand implements Command {
             log.error("Failed to create error file for " + this.getClass().getName() + " " + e.getMessage());
         }
         String absolutePath = getAbsolutePath(path);
-        LineValidator lineValidator = new LineValidator();
         List<String> lines;
-
         try {
             lines = Files.readAllLines(Paths.get(absolutePath), StandardCharsets.UTF_8);
-            int linesNum = lines.size();
-            int validLines = (int) lines.stream().filter(i -> lineValidator.validateLine(i).isValid()).count();
-            if (linesNum - validLines == 0) {
+            boolean isValid = true;
+            for (String i : lines) {
+                if(!validateLine(i)) {
+                    isValid = false;
+                }
+            }
+            if (isValid) {
                 writeValidData(absolutePath);
             } else {
                 writeInvalidData(absolutePath);
@@ -42,6 +44,12 @@ public class FileReaderCommand implements Command {
         } catch (IOException e) {
             fileErr.println(e.getMessage());
         }
+    }
+
+    private boolean validateLine(String str){
+        Pattern pattern = Pattern.compile(LINE_REGEX);
+        Matcher matcher = pattern.matcher(str);
+        return  matcher.matches();
     }
 
     private String getAbsolutePath(String path) {
