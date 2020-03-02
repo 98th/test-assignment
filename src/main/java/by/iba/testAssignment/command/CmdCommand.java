@@ -1,36 +1,30 @@
 package by.iba.testAssignment.command;
 
+import org.apache.commons.io.IOUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.nio.charset.Charset;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+
+import static by.iba.testAssignment.ApplicationConstants.CMD_ERR;
+import static by.iba.testAssignment.ApplicationConstants.CMD_OUT;
 
 
 public class CmdCommand implements Command {
-    private static final Logger log = LogManager.getLogger(CmdCommand.class);
 
     @Override
     public void execute(String value) {
+        try (BufferedWriter outWriter =  new BufferedWriter(new FileWriter(CMD_OUT));
+            BufferedWriter errWriter = new BufferedWriter(new FileWriter(CMD_ERR))) {
+            Process process = new ProcessBuilder("cmd.exe", "/c", value).start();
 
-    }
+            String stdErr = IOUtils.toString(process.getErrorStream(), Charset.defaultCharset());
+            String stdout = IOUtils.toString(process.getInputStream(), Charset.defaultCharset());
+            outWriter.write(stdout);
+            errWriter.write(stdErr);
 
-    //TODO
-    public Map<String, String> read () {
-        String command = "";
-        Map<String, String> output = new HashMap<>();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            command = reader.readLine();
         } catch (IOException e) {
-        String [] commandArray = command.split(" ");
-        output.put(commandArray[0], commandArray[1]);
-            return output;
+            e.printStackTrace();
         }
-        return null;
     }
 }

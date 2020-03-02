@@ -1,33 +1,37 @@
 package by.iba.testAssignment.command;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static by.iba.testAssignment.ApplicationConstants.FILE_ERR;
+import static by.iba.testAssignment.ApplicationConstants.FILE_OUT;
 
 public class FileReaderCommand implements Command {
     private static final Logger log = LogManager.getLogger(FileReaderCommand.class);
-    private static final String LINE_REGEX = "[A-Za-z]+=[A-Za-z]+";
+    private static final String LINE_REGEX = "[A-Za-z0-9]+=[A-Za-z0-9]+";
 
     @Override
     public void execute(String path) {
-        PrintWriter fileErr = null;
+        PrintWriter fileErrWriter = null;
         try {
-            fileErr = new PrintWriter(FILE_ERR, "UTF-8");
-        } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            log.error("Failed to create error file for " + this.getClass().getName() + " " + e.getMessage());
+            fileErrWriter = new PrintWriter(new FileWriter(FILE_ERR));
+        } catch (IOException  e) {
+            log.error("Failed to create error file " + e.getMessage());
         }
         String absolutePath = getAbsolutePath(path);
         List<String> lines;
+        System.out.println(new File(absolutePath).exists());
         try {
             lines = Files.readAllLines(Paths.get(absolutePath), StandardCharsets.UTF_8);
             boolean isValid = true;
@@ -42,7 +46,11 @@ public class FileReaderCommand implements Command {
                 writeInvalidData(absolutePath);
             }
         } catch (IOException e) {
-            fileErr.println(e.getMessage());
+            e.printStackTrace(fileErrWriter);
+        } finally {
+            if(fileErrWriter != null) {
+                fileErrWriter.close();
+            }
         }
     }
 
@@ -52,24 +60,35 @@ public class FileReaderCommand implements Command {
         return  matcher.matches();
     }
 
-    private String getAbsolutePath(String path) {
-        boolean isAbsolute = path.startsWith("\\:", 1);
-        return isAbsolute ? path : FileSystems.getDefault().getPath(path).normalize().toAbsolutePath().toString();
-    }
-
-    private void writeInvalidData(String path) {
-
-    }
-
-    private void writeValidData(String path){
-        File f = new File(path);
-        if(f.exists()){
-            try {
-                FileReader fr = new FileReader(f);
-                //TODO
-            } catch (FileNotFoundException e) {
-                e.getMessage();
-            }
+    private String getAbsolutePath(String pathName) {
+        Path path = Paths.get(pathName);
+        if (path.isAbsolute()){
+            return pathName;
+        } else {
+            return FileSystems.getDefault().getPath(pathName).normalize().toAbsolutePath().toString();
         }
+    }
+
+    private void writeInvalidData(String path) throws IOException {
+        File file = new File(path);
+        Scanner scanner = new Scanner(file);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_OUT));
+        while (scanner.hasNext()) {
+            String content = scanner.nextLine();
+            writer.write(content);
+        }
+        writer.close();
+    }
+
+    private void writeValidData(String path) throws IOException {
+        File file = new File(path);
+        Scanner scanner = new Scanner(file);
+        BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_OUT));
+        while (scanner.hasNext()) {
+            String content = scanner.nextLine();
+            String[] subContent = content.split("=");
+            writer.write(subContent[0] + "\r\n" + subContent[1] + "\r\n");
+        }
+        writer.close();
     }
 }

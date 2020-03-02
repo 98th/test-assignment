@@ -1,7 +1,7 @@
 package by.iba.testAssignment.command;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import static by.iba.testAssignment.ApplicationConstants.*;
 
@@ -17,7 +17,7 @@ public class CommandFactory {
             case REGISTRY_KEY_READER:
                 return new RegistryKeyCommand();
             default:
-                log.error("Failed to get command. Wrong type");
+                log.error("Failed to get command. Wrong type " + name);
                 throw new IllegalArgumentException();
         }
     }
