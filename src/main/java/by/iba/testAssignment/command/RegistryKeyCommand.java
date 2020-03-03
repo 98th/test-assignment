@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static by.iba.testAssignment.ApplicationConstants.RK_ERR;
-import static by.iba.testAssignment.ApplicationConstants.RK_OUT;
+import static by.iba.testAssignment.FileNameContainer.RK_ERR;
+import static by.iba.testAssignment.FileNameContainer.RK_OUT;
 
 public class RegistryKeyCommand implements Command {
     private static final String PATH_REGEX = "([A-Za-z_]+)(\\\\)([\\w\\p{Punct}\\\\]+)+(\\\\)([\\d\\w\\p{Punct}]+)";

@@ -3,21 +3,21 @@ package by.iba.testAssignment;
 import by.iba.testAssignment.command.Command;
 import by.iba.testAssignment.command.CommandFactory;
 
+
 import java.util.Scanner;
 
 
 public class Runner {
 
     public static void main(String[] args) {
+        System.out.println(System.getProperty("user.dir"));
         Scanner in = new Scanner(System.in);
-        System.out.println("Parameter flag: ");
-        String flag = in.nextLine();
-        System.out.println("Flag value: ");
-        String value = in.nextLine();
+        System.out.println("Enter a command: ");
+        String input = in.nextLine();
+        String [] parsedCommand = input.split(" ", 2);
 
         CommandFactory commandFactory = new CommandFactory();
-        Command command = commandFactory.build(flag);
-        command.execute(value);
+        Command command = commandFactory.build(parsedCommand[0]);
+        command.execute(parsedCommand[1]);
     }
-
 }

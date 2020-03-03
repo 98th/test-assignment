@@ -6,8 +6,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 
-import static by.iba.testAssignment.ApplicationConstants.CMD_ERR;
-import static by.iba.testAssignment.ApplicationConstants.CMD_OUT;
+import static by.iba.testAssignment.FileNameContainer.CMD_ERR;
+import static by.iba.testAssignment.FileNameContainer.CMD_OUT;
 
 
 public class CmdCommand implements Command {
@@ -22,7 +22,6 @@ public class CmdCommand implements Command {
             String stdout = IOUtils.toString(process.getInputStream(), Charset.defaultCharset());
             outWriter.write(stdout);
             errWriter.write(stdErr);
-
         } catch (IOException e) {
             e.printStackTrace();
         }

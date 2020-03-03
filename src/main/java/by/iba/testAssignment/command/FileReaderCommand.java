@@ -14,8 +14,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static by.iba.testAssignment.ApplicationConstants.FILE_ERR;
-import static by.iba.testAssignment.ApplicationConstants.FILE_OUT;
+import static by.iba.testAssignment.FileNameContainer.FILE_ERR;
+import static by.iba.testAssignment.FileNameContainer.FILE_OUT;
 
 public class FileReaderCommand implements Command {
     private static final Logger log = LogManager.getLogger(FileReaderCommand.class);
