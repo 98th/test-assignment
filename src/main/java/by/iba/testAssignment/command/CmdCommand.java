@@ -22,7 +22,9 @@ public class CmdCommand implements Command {
             String stdout = IOUtils.toString(process.getInputStream(), Charset.defaultCharset());
             outWriter.write(stdout);
             errWriter.write(stdErr);
-        } catch (IOException e) {
+
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
