@@ -6,8 +6,8 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 
-import static by.iba.testAssignment.FileNameContainer.CMD_ERR;
-import static by.iba.testAssignment.FileNameContainer.CMD_OUT;
+import static by.iba.testAssignment.ApplicationConstants.CMD_ERR;
+import static by.iba.testAssignment.ApplicationConstants.CMD_OUT;
 
 
 public class CmdCommand implements Command {

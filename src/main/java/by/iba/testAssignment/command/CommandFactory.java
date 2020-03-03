@@ -3,7 +3,8 @@ package by.iba.testAssignment.command;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Optional;
+import static by.iba.testAssignment.ApplicationConstants.*;
+
 
 public class CommandFactory {
     private static final Logger log = LogManager.getLogger(CommandFactory.class);
@@ -12,12 +13,7 @@ public class CommandFactory {
         if (name == null) {
             throw new IllegalArgumentException("Name is empty");
         }
-        Optional<CommandType> commandTypeOptional = CommandType.fromString(name);
-        if (!commandTypeOptional.isPresent()) {
-            throw new IllegalArgumentException("Failed to get command. Invalid type.");
-        }
-        CommandType commandType = commandTypeOptional.get();
-        switch (commandType) {
+        switch (name) {
             case FILE_COMMAND:
                 return new FileReaderCommand();
             case CMD_COMMAND:
